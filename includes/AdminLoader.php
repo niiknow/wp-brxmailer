@@ -36,8 +36,8 @@ class AdminLoader
         $slug       = $this->prefix;
 
         $hook = add_menu_page(
-            esc_html(__('Brxmailer', $this->prefix)),
-            esc_html(__('Brxmailer', $this->prefix)),
+            esc_html(__('BrickInc Mailer', $this->prefix)),
+            esc_html(__('BrickInc Mailer', $this->prefix)),
             $capability,
             $slug,
             [$this, 'plugin_page'],
