@@ -7,7 +7,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@next/dist/vue.global.prod.js"></script>
 
-  <link href="css/admin.css?id=a687770d26cb70136c314d1c87e598b8?id=e7d0db7017acbb4a9c51" rel="stylesheet">
+  <link href="css/admin.css?id=2e58ed75a88cbf41eeeb53ed7c36b878?id=e7d0db7017acbb4a9c51" rel="stylesheet">
   <title>Vue Wordpress Plugin Starter</title>
 </head>
 <body>
@@ -46,9 +46,9 @@
   </nav>
 
   <div id="vue-admin-app"></div>
-  <script src="js/manifest.js?id=119a1755af89ca2f87c551607772aac2"></script>
-  <script src="js/vendor.js?id=7109042fbae0cf0a5b14dc827f755494"></script>
-  <script src="js/admin.js?id=137cc6cb8e715e36c56ec4ab01b4874d"></script>
+  <script src="js/manifest.js?id=7585cebadae17dcf56b04f47fed38a12"></script>
+  <script src="js/vendor.js?id=b9c97b64d722f3358cfd5db881c0e05f"></script>
+  <script src="js/admin.js?id=759c8dd053ae9d97513a224161569741"></script>
   <style>
     html, body, #vue-admin-app {
       height: 100%;
@@ -78,7 +78,7 @@
       },
       rest: {
         endpoints: {
-          settings: '/wp-json/PluginPrefix/v1/settings'
+          settings: '/wp-json/brxmailer/v1/settings'
         }
       },
       settingStructure: {"sections":{"general":"General","advanced":"Advanced","debugging":"Debugging"},"options":{"input":{"name":"Input","description":"Simple text input","section":"general","type":"text","default":""},"email":{"name":"Email","description":"Email type input","section":"general","type":"email","default":""},"url":{"name":"URL","description":"URL input","section":"general","type":"url","default":""},"color":{"name":"Color","description":"Color picker","section":"general","type":"color","default":"#000"},"textarea":{"name":"Textarea","description":"Simple textarea","section":"general","type":"textarea","default":""},"dropdown":{"name":"Select one","description":"Single select dropdown","section":"general","type":"dropdown","default":"option1","options":["option1","option2","option3"]},"additional_css":{"name":"Additional CSS","description":"Add additional CSS to page","section":"advanced","type":"code","default":""},"enable_debug_messages":{"name":"Enable Debug Messages","description":"When enabled the plugin will output debug messages in the JavaScript console.","section":"debugging","type":"toggle","default":false},"cleanup_db_on_plugin_uninstall":{"name":"Cleanup database upon plugin uninstall","description":"When enabled the plugin will remove any database data upon plugin uninstall.","section":"advanced","type":"toggle","default":false},"include_post_types":{"name":"Post Types","description":"Demo multi-select dropdown","section":"general","type":"dropdownMultiselect","optionsCallback":{},"default":["post","page"],"options":["post","page"]}}}

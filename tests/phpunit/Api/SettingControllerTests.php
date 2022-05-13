@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use PluginSpace\Api;
+use Brxmailer\Api;
 use \Brain\Monkey\Functions;
 
 defined('ABSPATH') or die();
@@ -17,10 +17,10 @@ class SettingControllerTests extends PluginTestCase
             ->with('', 'names')
             ->andReturn(['post', 'page']);
 
-        $controller = new \PluginSpace\Api\SettingController();
+        $controller = new \Brxmailer\Api\SettingController();
 
         $actual   = $this->accessNonPublicProperty($controller, 'namespace');
-        $expected = \PluginSpace\Main::PREFIX . '/v1';
+        $expected = \Brxmailer\Main::PREFIX . '/v1';
         $this->assertEquals($expected, $actual);
 
         $actual   = $this->accessNonPublicProperty($controller, 'rest_base');

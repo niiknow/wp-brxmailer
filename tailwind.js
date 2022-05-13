@@ -17,7 +17,7 @@ module.exports = {
       cursor: ['disabled'],
     },
   },
-//  prefix: 'PluginPrefix-', //to prevent overlapping styles from WP
+//  prefix: 'brxmailer-', //to prevent overlapping styles from WP
   plugins: [
     require('@tailwindcss/forms'),
   ],

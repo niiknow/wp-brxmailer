@@ -1,5 +1,5 @@
 <?php
-namespace PluginSpace;
+namespace Brxmailer;
 
 /**
  * Implements example command.

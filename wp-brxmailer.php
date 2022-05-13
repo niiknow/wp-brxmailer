@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: PluginName
+ * Plugin Name: Brxmailer
  * Version: 1.0.0
  * Plugin URI:
- * Description: PluginName
+ * Description: Brxmailer
  * Author: noogen
  * Author URI:
  * Requires at least: 5.6
  * Tested up to: 5.8.3
  *
- * Text Domain: PluginPrefix
+ * Text Domain: brxmailer
  * Domain Path: /languages/
  *
  * License: GPLv2 or later
@@ -37,7 +37,7 @@ require __DIR__ . '/vendor/autoload.php';
 /**
  * Returns the main instance to prevent the need to use globals.
  */
-$instance = \PluginSpace\Main::get_instance(__FILE__, '1.0.0');
+$instance = \Brxmailer\Main::get_instance(__FILE__, '1.0.0');
 $instance->run();
 
 return $instance;

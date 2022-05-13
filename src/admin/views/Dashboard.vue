@@ -1,21 +1,57 @@
 <template>
   <div class="app-dashboard">
-    <section class="w-full text-center">
-      {{ msg }}
+    <section class="w-full text-center" v-if="hasLoaded">
+      <div v-if="pluginUrl.length < 1">
+        <b>WP MAIL SMTP</b> was not found.
+        To install, follow this link <a :href="pluginUrl">{{ pluginUrl }}</a>
+      </div>
+      <div v-else>
+        Once activated, this plugin is <b>enabled</b> by default.  You must goto <b>WP MAIL SMTP</b> settings to setup "API Key" for the BrickInc Mailer.  Simply deactivate this plugin if you no longer wish to utilize the BrickInc Mailer.
+      </div>
     </section>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, reactive, computed, ref, nextTick, toRaw } from 'vue'
 
 export default defineComponent({
   name: 'Dashboard',
-  props: {
-    msg: {
-      type: String,
-      required: false,
-      default: 'Welcome to Your Vue.js Backend App'
+  setup () {
+    const hasLoaded = ref(false)
+    const pluginUrl = ref('')
+
+    return {
+      hasLoaded,
+      pluginUrl
+    }
+  },
+  methods: {
+    async doLoad() {
+      await nextTick()
+
+      // @ts-ignore
+      const config = this.$win.vue_wp_plugin_config_admin
+
+      this.pluginUrl = config.wp_mail_smtp_url || '';
+      this.hasLoaded = true
+
+      this.$forceUpdate()
+    }
+  },
+  beforeMount() {
+    var that = this
+
+    // @ts-ignore
+    if (that.$win && that.$win.vue_wp_plugin_config_admin) {
+      that.doLoad()
+      return
+    }
+
+    document.onreadystatechange = async () => {
+      if (document.readyState == "complete") {
+        this.doLoad()
+      }
     }
   }
 })

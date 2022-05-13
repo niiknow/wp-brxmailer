@@ -17,8 +17,8 @@
     "preferred-install": "dist",
     "sort-packages": true,
     "classmap-authoritative": false,
-    "classloader-suffix": "PluginSpace",
-    "autoloader-suffix": "PluginSpace",
+    "classloader-suffix": "Brxmailer",
+    "autoloader-suffix": "Brxmailer",
     "process-timeout": 0,
     "vendor-dir": "vendor",
     "platform-check": false,
@@ -29,8 +29,12 @@
   },
   "autoload": {
     "psr-4": {
-      "PluginSpace\\": "includes/"
-    }
+      "Brxmailer\\": "includes/"
+    },
+    "exclude-from-files": [
+       "includes/Provider/Mailer.php",
+       "includes/Provider/Options.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

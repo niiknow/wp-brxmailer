@@ -1,5 +1,5 @@
 <?php
-namespace PluginSpace;
+namespace Brxmailer;
 
 /**
  * Admin pages loader
@@ -36,8 +36,8 @@ class AdminLoader
         $slug       = $this->prefix;
 
         $hook = add_menu_page(
-            esc_html(__('PluginName', $this->prefix)),
-            esc_html(__('PluginName', $this->prefix)),
+            esc_html(__('Brxmailer', $this->prefix)),
+            esc_html(__('Brxmailer', $this->prefix)),
             $capability,
             $slug,
             [$this, 'plugin_page'],
@@ -51,12 +51,6 @@ class AdminLoader
                 $capability,
                 $slug,
                 [$this, 'plugin_page']
-            );
-            add_submenu_page($slug,
-                esc_html(__('Settings', $this->prefix)),
-                esc_html(__('Settings', $this->prefix)),
-                $capability,
-                "admin.php?page={$slug}#/settings"
             );
         }
     }
@@ -82,11 +76,28 @@ class AdminLoader
     {
         $this->enqueue_scripts();
 
+        $plugUrl = '';
+        if (function_exists('wp_mail_smtp')) {
+            $action  = 'install-plugin';
+            $slug    = 'wp_mail_smtp';
+            $plugUrl = wp_nonce_url(
+                add_query_arg(
+                    array(
+                        'action' => $action,
+                        'plugin' => $slug
+                    ),
+                    admin_url( 'update.php' )
+                ),
+                $action .'_'.$slug
+            );
+        }
+
+
         $settingController = new Api\SettingController();
 
         // output data for use on client-side
         // https://wordpress.stackexchange.com/questions/344537/authenticating-with-rest-api
-        $appVars = apply_filters('PluginPrefix/admin_app_vars', array(
+        $appVars = apply_filters('brxmailer/admin_app_vars', array(
             'rest'             => [
                 'endpoints' => [
                     'settings' => esc_url_raw(rest_url($settingController->get_endpoint())),
@@ -98,7 +109,8 @@ class AdminLoader
             'settingStructure' => $settingController->get_settings_structure(true),
             'prefix'           => $this->prefix,
             'adminUrl'         => admin_url( '/' ),
-            'pluginUrl'        => rtrim(\PluginSpace\Main::$BASEURL, '/')
+            'pluginUrl'        => rtrim(\Brxmailer\Main::$BASEURL, '/'),
+            'wp_mail_smtp_url' => $plugUrl
         ));
 
         wp_localize_script($this->prefix . '-admin', 'vue_wp_plugin_config_admin', $appVars);

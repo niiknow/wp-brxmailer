@@ -1,5 +1,5 @@
 <?php
-namespace PluginSpace;
+namespace Brxmailer;
 
 /**
  * Frontend pages loader
@@ -62,8 +62,8 @@ class FrontendLoader
         if ($postfix === 'frontend') {
             // output data for use on client-side
             // https://wordpress.stackexchange.com/questions/344537/authenticating-with-rest-api
-            $appVars = apply_filters('PluginPrefix/frontend_app_vars', array(
-                'pluginUrl'     => rtrim(\PluginSpace\Main::$BASEURL, '/')
+            $appVars = apply_filters('brxmailer/frontend_app_vars', array(
+                'pluginUrl'     => rtrim(\Brxmailer\Main::$BASEURL, '/')
             ));
             wp_localize_script($this->prefix . '-' . $postfix, 'vue_wp_plugin_config_' . $postfix, $appVars);
 
@@ -71,9 +71,9 @@ class FrontendLoader
         } else if ($postfix === 'frontview') {
             // output data for use on client-side
             // https://wordpress.stackexchange.com/questions/344537/authenticating-with-rest-api
-            $appVars = apply_filters('PluginPrefix/frontview_app_vars', array(
+            $appVars = apply_filters('brxmailer/frontview_app_vars', array(
                 'viewComponent' => esc_attr($a['view']),
-                'pluginUrl'     => rtrim(\PluginSpace\Main::$BASEURL, '/')
+                'pluginUrl'     => rtrim(\Brxmailer\Main::$BASEURL, '/')
             ));
             wp_localize_script($this->prefix . '-' . $postfix, 'vue_wp_plugin_config_' . $postfix, $appVars);
 

@@ -1,5 +1,5 @@
 <?php
-namespace PluginSpace;
+namespace Brxmailer;
 
 /**
  * API routes loader
