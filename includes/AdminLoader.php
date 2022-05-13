@@ -77,9 +77,9 @@ class AdminLoader
         $this->enqueue_scripts();
 
         $plugUrl = '';
-        if (function_exists('wp_mail_smtp')) {
+        if (! function_exists('wp_mail_smtp')) {
             $action  = 'install-plugin';
-            $slug    = 'wp_mail_smtp';
+            $slug    = 'wp-mail-smtp';
             $plugUrl = wp_nonce_url(
                 add_query_arg(
                     array(

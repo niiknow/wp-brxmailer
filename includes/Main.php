@@ -175,8 +175,6 @@ final class Main
      */
     public function plugins_loaded()
     {
-        add_action('init', array($this, 'init_hook_handler'));
-
         // load the Mailer and Options if plugin is defined
         if (function_exists('wp_mail_smtp')) {
             require_once self::$PLUGINDIR . '/includes/Provider/Mailer.php';
@@ -185,6 +183,8 @@ final class Main
             add_filter( 'wp_mail_smtp_options_get', array($this, 'my_options_get'), 10, 3 );
             add_filter( 'wp_mail_smtp_providers_loader_get_providers', array($this, 'my_get_providers'), 10, 3 );
         }
+
+        add_action('init', array($this, 'init_hook_handler'));
     }
 
     /**

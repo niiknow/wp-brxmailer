@@ -1,13 +1,13 @@
 <template>
   <div class="app-dashboard">
-    <section class="w-full text-center" v-if="hasLoaded">
-      <div v-if="pluginUrl.length < 1">
+    <section class="w-full text-center pt-40" v-if="hasLoaded">
+      <h3 v-if="pluginUrl.length > 1">
         <b>WP MAIL SMTP</b> was not found.
         To install, follow this link <a :href="pluginUrl">{{ pluginUrl }}</a>
-      </div>
-      <div v-else>
-        Once activated, this plugin is <b>enabled</b> by default.  You must goto <b>WP MAIL SMTP</b> settings to setup "API Key" for the BrickInc Mailer.  Simply deactivate this plugin if you no longer wish to utilize the BrickInc Mailer.
-      </div>
+      </h3>
+      <h3 v-else>
+        Once activated, this plugin is <b>enabled</b> by default.  You must goto <a href="/wp-admin/admin.php?page=wp-mail-smtp">WP MAIL SMTP settings</a> to setup "API Key" for the BrickInc Mailer.  Simply deactivate this plugin if you no longer wish to utilize the BrickInc Mailer.
+      </h3>
     </section>
   </div>
 </template>
