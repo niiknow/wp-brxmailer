@@ -8,22 +8,18 @@ use WPMailSMTP\Options as PluginOptions;
 /**
  * Class Options.
  *
- * @since 1.8.0
  */
 class Options extends OptionsAbstract {
 
     /**
      * Mailer slug.
      *
-     * @since 1.8.0
      */
     const SLUG = 'brickinc';
 
     /**
      * Options constructor.
      *
-     * @since 1.8.0
-     * @since 2.3.0 Added 'supports' parameter.
      */
     public function __construct() {
 
@@ -56,7 +52,7 @@ class Options extends OptionsAbstract {
     public function display_options() {
 
         // Do not display options if PHP version is not correct.
-        if ( ! $this->is_php_correct() ) {
+        if (! $this->is_php_correct()) {
             $this->display_php_warning();
 
             return;
@@ -70,7 +66,7 @@ class Options extends OptionsAbstract {
                 <label for="wp-mail-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-api_key"><?php esc_html_e( 'API Key', 'wp-mail-smtp' ); ?></label>
             </div>
             <div class="wp-mail-smtp-setting-field">
-                <?php if ( $this->options->is_const_defined( $this->get_slug(), 'api_key' ) ) : ?>
+                <?php if ($this->options->is_const_defined( $this->get_slug(), 'api_key' )) : ?>
                     <input type="text" disabled value="****************************************"
                         id="wp-mail-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-api_key"
                     />

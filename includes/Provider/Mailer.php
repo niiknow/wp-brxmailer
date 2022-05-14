@@ -62,7 +62,7 @@ class Mailer extends MailerAbstract {
      */
     public function set_headers( $headers ) {
 
-        foreach ( $headers as $header ) {
+        foreach ($headers as $header) {
             $name  = isset( $header[0] ) ? $header[0] : false;
             $value = isset( $header[1] ) ? $header[1] : false;
 
@@ -84,20 +84,20 @@ class Mailer extends MailerAbstract {
 
         $name = sanitize_text_field( $name );
 
-        if ( empty( $name ) ) {
+        if (empty( $name )) {
             return;
         }
 
         $headers = isset( $this->body['headers'] ) ? (array) $this->body['headers'] : [];
 
-        if ( $name !== 'Message-ID' ) {
+        if ($name !== 'Message-ID') {
             $value = WP::sanitize_value( $value );
         }
 
         // Prevent duplicates.
         $key = array_search( $name, array_column( $headers, 'name' ), true );
 
-        if ( $key !== false ) {
+        if ($key !== false) {
             unset( $headers[ $key ] );
         }
 
@@ -117,13 +117,13 @@ class Mailer extends MailerAbstract {
      */
     public function set_from( $email, $name = '' ) {
 
-        if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+        if (! filter_var( $email, FILTER_VALIDATE_EMAIL )) {
             return;
         }
 
         $from['from'] = $email;
 
-        if ( ! empty( $name ) ) {
+        if (! empty( $name )) {
             $from['from_name'] = $name;
         }
 
@@ -138,15 +138,14 @@ class Mailer extends MailerAbstract {
     public function set_recipients( $recipients ) {
 
 
-        if ( empty( $recipients ) ) {
+        if (empty( $recipients )) {
             return;
         }
 
         $default = [ 'to', 'cc', 'bcc' ];
 
-        foreach ( $recipients as $type => $emails ) {
-            if (
-                ! in_array( $type, $default, true ) ||
+        foreach ($recipients as $type => $emails) {
+            if (! in_array( $type, $default, true ) ||
                 empty( $emails ) ||
                 ! is_array( $emails )
             ) {
@@ -155,29 +154,29 @@ class Mailer extends MailerAbstract {
 
             $data = [];
 
-            foreach ( $emails as $email ) {
+            foreach ($emails as $email) {
                 $addr = isset( $email[0] ) ? $email[0] : false;
 
-                if ( ! filter_var( $addr, FILTER_VALIDATE_EMAIL ) ) {
+                if (! filter_var( $addr, FILTER_VALIDATE_EMAIL )) {
                     continue;
                 }
 
                 $data[] = $addr;
             }
 
-            if ( ! empty( $data ) ) {
+            if (! empty( $data )) {
                 if ($type === 'to') {
                     $this->set_body_param(
-                        [
+                        array(
                             $type => implode( ',', $data ),
-                        ]
+                        )
                     );
                 } else {
                     // API only support single email for cc and bcc
                     $this->set_body_param(
-                        [
+                        array(
                             $type => $data[0]
-                        ]
+                        )
                     );
                 }
             }
@@ -191,20 +190,20 @@ class Mailer extends MailerAbstract {
      */
     public function set_content( $content ) {
 
-        if ( empty( $content ) ) {
+        if (empty( $content )) {
             return;
         }
 
         $bodyContent = array();
-        if ( is_array( $content ) ) {
-            if ( ! empty( $content['text'] ) ) {
+        if (is_array( $content )) {
+            if (! empty( $content['text'] )) {
                 $bodyContent[] = array(
                     'type' => 'text',
                     'value' => $content['text']
                 );
             }
 
-            if ( ! empty( $content['html'] ) ) {
+            if (! empty( $content['html'] )) {
                 $bodyContent[] = array(
                     'type' => 'html',
                     'value' => $content['html']
@@ -233,13 +232,13 @@ class Mailer extends MailerAbstract {
      */
     public function set_attachments( $attachments ) {
 
-        if ( empty( $attachments ) ) {
+        if (empty( $attachments )) {
             return;
         }
 
         $data = $this->prepare_attachments( $attachments );
 
-        if ( ! empty( $data ) ) {
+        if (! empty( $data )) {
             $this->set_body_param(
                 [
                     'attachments' => $data,
@@ -259,7 +258,7 @@ class Mailer extends MailerAbstract {
 
         $data = [];
 
-        foreach ( $attachments as $attachment ) {
+        foreach ($attachments as $attachment) {
             $file = false;
 
             /*
@@ -267,14 +266,14 @@ class Mailer extends MailerAbstract {
              * It is not always available, same as credentials for FTP.
              */
             try {
-                if ( is_file( $attachment[0] ) && is_readable( $attachment[0] ) ) {
+                if (is_file( $attachment[0] ) && is_readable( $attachment[0] )) {
                     $file = file_get_contents( $attachment[0] );
                 }
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 $file = false;
             }
 
-            if ( $file === false ) {
+            if ($file === false) {
                 continue;
             }
 
@@ -288,12 +287,42 @@ class Mailer extends MailerAbstract {
     }
 
     /**
-     * BrickInc API do not support reply to, it's actually using from email.
+     * Parse email for reply_to
      *
      * @param array $reply_to Name/email for reply-to feature.
      */
     public function set_reply_to( $reply_to ) {
+        if (empty( $reply_to )) {
+            return;
+        }
 
+        $data = array();
+
+        foreach ($reply_to as $key => $emails) {
+            if (empty( $emails ) ||
+                ! is_array( $emails )
+            ) {
+                continue;
+            }
+
+            $addr = isset( $emails[0] ) ? $emails[0] : false;
+            // $name = isset( $emails[1] ) ? $emails[1] : false;
+
+            if (! filter_var( $addr, FILTER_VALIDATE_EMAIL )) {
+                continue;
+            }
+
+            $data[] = $addr;
+        }
+
+        if (! empty( $data )) {
+            // API only support single email for reply_to
+            $this->set_body_param(
+                array(
+                    'reply_to' => $data[0]
+                )
+            );
+        }
     }
 
     /**
@@ -317,14 +346,14 @@ class Mailer extends MailerAbstract {
         $info    = ! empty( $body['info'] ) ? $body['info'] : '';
         $message = '';
 
-        if ( ! empty( $this->error_message ) ) {
+        if (! empty( $this->error_message )) {
             $message = $this->error_message;
-        } elseif ( is_string( $error ) ) {
+        } elseif (is_string( $error )) {
             $message = $error . ( ( ! empty( $info ) ) ? ' - ' . $info : '' );
-        } elseif ( is_array( $error ) ) {
+        } elseif (is_array( $error )) {
             $message = '';
 
-            foreach ( $error as $item ) {
+            foreach ($error as $item) {
                 $message .= sprintf(
                     '%1$s (%2$s - %3$s)',
                     ! empty( $item->description ) ? $item->description : esc_html__( 'General error', 'wp-mail-smtp' ),
@@ -359,7 +388,7 @@ class Mailer extends MailerAbstract {
         $options = $this->options->get_group( $this->mailer );
 
         // API key is the only required option.
-        if ( ! empty( $options['api_key'] ) ) {
+        if (! empty( $options['api_key'] )) {
             return true;
         }
 
