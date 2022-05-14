@@ -16,8 +16,6 @@ class Mailer extends MailerAbstract {
     /**
      * Which response code from HTTP provider is considered to be successful?
      *
-     * @since 1.8.0
-     *
      * @var int
      */
     protected $email_sent_code = 202;
@@ -46,7 +44,7 @@ class Mailer extends MailerAbstract {
     /**
      * Redefine the way email body is returned.
      * By default we are sending an array of data.
-     * Pepipost requires a JSON, so we encode the body.
+     * Brick, Inc. requires a JSON, so we encode the body.
      *
      * @return string
      */
@@ -228,7 +226,7 @@ class Mailer extends MailerAbstract {
     }
 
     /**
-     * Pepipost API accepts an array of files content in body, so we will include all files and send.
+     * Brick, Inc API accepts an array of files content in body, so we will include all files and send.
      * Doesn't handle exceeding the limits etc, as this will be reported by the API response.
      *
      * @param array $attachments The list of attachments data.
@@ -251,7 +249,7 @@ class Mailer extends MailerAbstract {
     }
 
     /**
-     * Prepare the attachments data for Pepipost API.
+     * Prepare the attachments data for Brick, Inc API.
      *
      * @param array $attachments Array of attachments.
      *
@@ -294,10 +292,12 @@ class Mailer extends MailerAbstract {
      *
      * @param array $reply_to Name/email for reply-to feature.
      */
-    public function set_reply_to( $reply_to ) {}
+    public function set_reply_to( $reply_to ) {
+
+    }
 
     /**
-     * Pepipost API doesn't support sender or return_path params.
+     * BrickInc, API doesn't support sender or return_path params.
      * So we do nothing.
      *
      * @param string $from_email The from email address.
