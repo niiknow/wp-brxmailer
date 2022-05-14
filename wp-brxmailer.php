@@ -3,7 +3,7 @@
  * Plugin Name: Brxmailer
  * Version: 1.0.0
  * Plugin URI:
- * Description: Brxmailer
+ * Description: Brick, Inc. Mailer Integration for WP Mail SMTP
  * Author: noogen
  * Author URI:
  * Requires at least: 5.6
