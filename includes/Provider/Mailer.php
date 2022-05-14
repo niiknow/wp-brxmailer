@@ -3,16 +3,14 @@
 namespace WPMailSMTP\Providers\BrickInc;
 
 use WPMailSMTP\MailCatcherInterface;
-use WPMailSMTP\Options as PluginOptions;
 use WPMailSMTP\Providers\MailerAbstract;
 use WPMailSMTP\WP;
 
 /**
  * BrickInc API mailer.
- *
  */
-class Mailer extends MailerAbstract {
-
+class Mailer extends MailerAbstract
+{
     /**
      * Which response code from HTTP provider is considered to be successful?
      *
@@ -32,13 +30,14 @@ class Mailer extends MailerAbstract {
      *
      * @param MailCatcherInterface $phpmailer The MailCatcher instance.
      */
-    public function __construct( $phpmailer ) {
+    public function __construct($phpmailer)
+    {
 
         // We want to prefill everything from MailCatcher class, which extends PHPMailer.
-        parent::__construct( $phpmailer );
+        parent::__construct($phpmailer);
 
-        $this->set_header( 'x-api-key', $this->options->get( $this->mailer, 'api_key' ) );
-        $this->set_header( 'content-type', 'application/json' );
+        $this->set_header('x-api-key', $this->options->get($this->mailer, 'api_key'));
+        $this->set_header('content-type', 'application/json');
     }
 
     /**
@@ -48,11 +47,11 @@ class Mailer extends MailerAbstract {
      *
      * @return string
      */
-    public function get_body() {
-
+    public function get_body()
+    {
         $body = parent::get_body();
 
-        return wp_json_encode( $body );
+        return wp_json_encode($body);
     }
 
     /**
@@ -60,18 +59,18 @@ class Mailer extends MailerAbstract {
      *
      * @param array $headers Headers array.
      */
-    public function set_headers( $headers ) {
-
+    public function set_headers($headers)
+    {
         foreach ($headers as $header) {
-            $name  = isset( $header[0] ) ? $header[0] : false;
-            $value = isset( $header[1] ) ? $header[1] : false;
+            $name = isset($header[0]) ? $header[0] : false;
+            $value = isset($header[1]) ? $header[1] : false;
 
-            $this->set_body_header( $name, $value );
+            $this->set_body_header($name, $value);
         }
 
         // Add custom PHPMailer-specific header.
-        $this->set_body_header( 'X-Mailer', 'WPMailSMTP/Mailer/' . $this->mailer . ' ' . WPMS_PLUGIN_VER );
-        $this->set_body_header( 'Message-ID', $this->phpmailer->getLastMessageID() );
+        $this->set_body_header('X-Mailer', 'WPMailSMTP/Mailer/'.$this->mailer.' '.WPMS_PLUGIN_VER);
+        $this->set_body_header('Message-ID', $this->phpmailer->getLastMessageID());
     }
 
     /**
@@ -80,25 +79,25 @@ class Mailer extends MailerAbstract {
      * @param string $name  Header name.
      * @param string $value Header value.
      */
-    public function set_body_header( $name, $value ) {
+    public function set_body_header($name, $value)
+    {
+        $name = sanitize_text_field($name);
 
-        $name = sanitize_text_field( $name );
-
-        if (empty( $name )) {
+        if (empty($name)) {
             return;
         }
 
-        $headers = isset( $this->body['headers'] ) ? (array) $this->body['headers'] : [];
+        $headers = isset($this->body['headers']) ? (array) $this->body['headers'] : [];
 
         if ($name !== 'Message-ID') {
-            $value = WP::sanitize_value( $value );
+            $value = WP::sanitize_value($value);
         }
 
         // Prevent duplicates.
-        $key = array_search( $name, array_column( $headers, 'name' ), true );
+        $key = array_search($name, array_column($headers, 'name'), true);
 
         if ($key !== false) {
-            unset( $headers[ $key ] );
+            unset($headers[$key]);
         }
 
         $headers[] = [
@@ -106,7 +105,7 @@ class Mailer extends MailerAbstract {
             'value' => $value,
         ];
 
-        $this->body['headers'] = array_values( $headers );
+        $this->body['headers'] = array_values($headers);
     }
 
     /**
@@ -115,15 +114,15 @@ class Mailer extends MailerAbstract {
      * @param string $email From mail.
      * @param string $name  From name.
      */
-    public function set_from( $email, $name = '' ) {
-
-        if (! filter_var( $email, FILTER_VALIDATE_EMAIL )) {
+    public function set_from($email, $name = '')
+    {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return;
         }
 
         $from['from'] = $email;
 
-        if (! empty( $name )) {
+        if (! empty($name)) {
             $from['from_name'] = $name;
         }
 
@@ -135,19 +134,18 @@ class Mailer extends MailerAbstract {
      *
      * @param array $recipients List of recipients: cc/bcc/to.
      */
-    public function set_recipients( $recipients ) {
-
-
-        if (empty( $recipients )) {
+    public function set_recipients($recipients)
+    {
+        if (empty($recipients)) {
             return;
         }
 
-        $default = [ 'to', 'cc', 'bcc' ];
+        $default = ['to', 'cc', 'bcc'];
 
         foreach ($recipients as $type => $emails) {
-            if (! in_array( $type, $default, true ) ||
-                empty( $emails ) ||
-                ! is_array( $emails )
+            if (! in_array($type, $default, true) ||
+                empty($emails) ||
+                ! is_array($emails)
             ) {
                 continue;
             }
@@ -155,28 +153,28 @@ class Mailer extends MailerAbstract {
             $data = [];
 
             foreach ($emails as $email) {
-                $addr = isset( $email[0] ) ? $email[0] : false;
+                $addr = isset($email[0]) ? $email[0] : false;
 
-                if (! filter_var( $addr, FILTER_VALIDATE_EMAIL )) {
+                if (! filter_var($addr, FILTER_VALIDATE_EMAIL)) {
                     continue;
                 }
 
                 $data[] = $addr;
             }
 
-            if (! empty( $data )) {
+            if (! empty($data)) {
                 if ($type === 'to') {
                     $this->set_body_param(
-                        array(
-                            $type => implode( ',', $data ),
-                        )
+                        [
+                            $type => implode(',', $data),
+                        ]
                     );
                 } else {
                     // API only support single email for cc and bcc
                     $this->set_body_param(
-                        array(
-                            $type => $data[0]
-                        )
+                        [
+                            $type => $data[0],
+                        ]
                     );
                 }
             }
@@ -188,38 +186,37 @@ class Mailer extends MailerAbstract {
      *
      * @param array|string $content Email content.
      */
-    public function set_content( $content ) {
-
-        if (empty( $content )) {
+    public function set_content($content)
+    {
+        if (empty($content)) {
             return;
         }
 
-        $bodyContent = array();
-        if (is_array( $content )) {
-            if (! empty( $content['text'] )) {
-                $bodyContent[] = array(
+        $bodyContent = [];
+        if (is_array($content)) {
+            if (! empty($content['text'])) {
+                $bodyContent[] = [
                     'type' => 'text',
-                    'value' => $content['text']
-                );
+                    'value' => $content['text'],
+                ];
             }
 
-            if (! empty( $content['html'] )) {
-                $bodyContent[] = array(
+            if (! empty($content['html'])) {
+                $bodyContent[] = [
                     'type' => 'html',
-                    'value' => $content['html']
-                );
+                    'value' => $content['html'],
+                ];
             }
         } else {
-
-            $bodyContent[] = array(
-                'type' => ( $this->phpmailer->ContentType === 'text/plain' ) ? 'text' : 'html',
-                'value' => $content
-            );
+            $bodyContent[] = [
+                'type' => ($this->phpmailer->ContentType === 'text/plain') ? 'text' : 'html',
+                'value' => $content,
+            ];
         }
 
         $this->set_body_param(
             [
-                'content' => $bodyContent
+                'content' => $bodyContent,
             ]
         );
     }
@@ -230,15 +227,15 @@ class Mailer extends MailerAbstract {
      *
      * @param array $attachments The list of attachments data.
      */
-    public function set_attachments( $attachments ) {
-
-        if (empty( $attachments )) {
+    public function set_attachments($attachments)
+    {
+        if (empty($attachments)) {
             return;
         }
 
-        $data = $this->prepare_attachments( $attachments );
+        $data = $this->prepare_attachments($attachments);
 
-        if (! empty( $data )) {
+        if (! empty($data)) {
             $this->set_body_param(
                 [
                     'attachments' => $data,
@@ -254,8 +251,8 @@ class Mailer extends MailerAbstract {
      *
      * @return array
      */
-    protected function prepare_attachments( $attachments ) {
-
+    protected function prepare_attachments($attachments)
+    {
         $data = [];
 
         foreach ($attachments as $attachment) {
@@ -266,8 +263,8 @@ class Mailer extends MailerAbstract {
              * It is not always available, same as credentials for FTP.
              */
             try {
-                if (is_file( $attachment[0] ) && is_readable( $attachment[0] )) {
-                    $file = file_get_contents( $attachment[0] );
+                if (is_file($attachment[0]) && is_readable($attachment[0])) {
+                    $file = file_get_contents($attachment[0]);
                 }
             } catch (\Exception $e) {
                 $file = false;
@@ -278,7 +275,7 @@ class Mailer extends MailerAbstract {
             }
 
             $data[] = [
-                'content' => base64_encode( $file ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+                'content' => base64_encode($file), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
                 'name'    => $attachment[2],
             ];
         }
@@ -287,40 +284,41 @@ class Mailer extends MailerAbstract {
     }
 
     /**
-     * Parse email for reply_to
+     * Parse email for reply_to.
      *
      * @param array $reply_to Name/email for reply-to feature.
      */
-    public function set_reply_to( $reply_to ) {
-        if (empty( $reply_to )) {
+    public function set_reply_to($reply_to)
+    {
+        if (empty($reply_to)) {
             return;
         }
 
-        $data = array();
+        $data = [];
 
         foreach ($reply_to as $key => $emails) {
-            if (empty( $emails ) ||
-                ! is_array( $emails )
+            if (empty($emails) ||
+                ! is_array($emails)
             ) {
                 continue;
             }
 
-            $addr = isset( $emails[0] ) ? $emails[0] : false;
+            $addr = isset($emails[0]) ? $emails[0] : false;
             // $name = isset( $emails[1] ) ? $emails[1] : false;
 
-            if (! filter_var( $addr, FILTER_VALIDATE_EMAIL )) {
+            if (! filter_var($addr, FILTER_VALIDATE_EMAIL)) {
                 continue;
             }
 
             $data[] = $addr;
         }
 
-        if (! empty( $data )) {
+        if (! empty($data)) {
             // API only support single email for reply_to
             $this->set_body_param(
-                array(
-                    'reply_to' => $data[0]
-                )
+                [
+                    'reply_to' => $data[0],
+                ]
             );
         }
     }
@@ -331,35 +329,38 @@ class Mailer extends MailerAbstract {
      *
      * @param string $from_email The from email address.
      */
-    public function set_return_path( $from_email ) {}
+    public function set_return_path($from_email)
+    {
+    }
 
     /**
      * Get a BrickInc-specific response with a helpful error.
      *
      * @return string
      */
-    public function get_response_error() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
+    public function get_response_error()
+    { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
 
-        $body = (array) wp_remote_retrieve_body( $this->response );
+        $body = (array) wp_remote_retrieve_body($this->response);
 
-        $error   = ! empty( $body['error'] ) ? $body['error'] : '';
-        $info    = ! empty( $body['info'] ) ? $body['info'] : '';
+        $error = ! empty($body['error']) ? $body['error'] : '';
+        $info = ! empty($body['info']) ? $body['info'] : '';
         $message = '';
 
-        if (! empty( $this->error_message )) {
+        if (! empty($this->error_message)) {
             $message = $this->error_message;
-        } elseif (is_string( $error )) {
-            $message = $error . ( ( ! empty( $info ) ) ? ' - ' . $info : '' );
-        } elseif (is_array( $error )) {
+        } elseif (is_string($error)) {
+            $message = $error.((! empty($info)) ? ' - '.$info : '');
+        } elseif (is_array($error)) {
             $message = '';
 
             foreach ($error as $item) {
                 $message .= sprintf(
                     '%1$s (%2$s - %3$s)',
-                    ! empty( $item->description ) ? $item->description : esc_html__( 'General error', 'wp-mail-smtp' ),
-                    ! empty( $item->message ) ? $item->message : esc_html__( 'Error', 'wp-mail-smtp' ),
-                    ! empty( $item->field ) ? $item->field : ''
-                ) . PHP_EOL;
+                    ! empty($item->description) ? $item->description : esc_html__('General error', 'wp-mail-smtp'),
+                    ! empty($item->message) ? $item->message : esc_html__('Error', 'wp-mail-smtp'),
+                    ! empty($item->field) ? $item->field : ''
+                ).PHP_EOL;
             }
         }
 
@@ -371,11 +372,11 @@ class Mailer extends MailerAbstract {
      *
      * @return string
      */
-    public function get_debug_info() {
+    public function get_debug_info()
+    {
+        $debug_text[] = '<strong>Api Key:</strong> '.($this->is_mailer_complete() ? 'Yes' : 'No');
 
-        $debug_text[] = '<strong>Api Key:</strong> ' . ( $this->is_mailer_complete() ? 'Yes' : 'No' );
-
-        return implode( '<br>', $debug_text );
+        return implode('<br>', $debug_text);
     }
 
     /**
@@ -383,12 +384,12 @@ class Mailer extends MailerAbstract {
      *
      * @return bool
      */
-    public function is_mailer_complete() {
-
-        $options = $this->options->get_group( $this->mailer );
+    public function is_mailer_complete()
+    {
+        $options = $this->options->get_group($this->mailer);
 
         // API key is the only required option.
-        if (! empty( $options['api_key'] )) {
+        if (! empty($options['api_key'])) {
             return true;
         }
 

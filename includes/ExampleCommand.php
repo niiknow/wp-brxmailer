@@ -1,13 +1,12 @@
 <?php
+
 namespace Brxmailer;
 
 /**
  * Implements example command.
- *
  */
 class ExampleCommand
 {
-
     /**
      * Prints a greeting.
      *
