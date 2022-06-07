@@ -209,7 +209,7 @@ final class Main
     public function my_get_providers($providers)
     {
         if (! isset($providers['brickinc'])) {
-            $providers['brickinc'] = 'WPMailSMTP\Providers\BrickINC\\';
+            $providers['brickinc'] = 'WPMailSMTP\Providers\BrickInc\\';
         }
 
         return $providers;
